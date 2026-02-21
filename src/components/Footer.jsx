@@ -9,7 +9,7 @@ const Footer = () => {
         {/* Logo & About */}
         <div>
           <h2 className="text-2xl font-bold text-white mb-4">
-            AirlineRules
+            FlightHubz
           </h2>
           <p className="text-gray-400 text-sm leading-6">
             Get the latest airline policies, flight change rules,

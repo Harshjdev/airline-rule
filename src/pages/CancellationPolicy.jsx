@@ -1,16 +1,17 @@
+
+import bannerImage from "../assets/Copilot.png"
 const CancellationPolicy = () => {
   return (
     <>
       {/* Hero Banner */}
       <div
         className="relative h-72 bg-cover bg-center flex items-center justify-center"
-        style={{
-          backgroundImage:
-            "url(https://images.unsplash.com/photo-1504196606672-aef5c9cefc92)",
-        }}
+       style={{
+  backgroundImage: `url(${bannerImage})`,
+}}
       >
         {/* Overlay */}
-        <div className="absolute inset-0 bg-blue-900/60"></div>
+        <div className="absolute inset-0"></div>
 
         <h1 className="relative text-4xl md:text-5xl font-bold text-white text-center px-4">
           Cancellation Policy

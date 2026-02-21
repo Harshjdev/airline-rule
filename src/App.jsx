@@ -7,6 +7,7 @@ import ReservationPolicy from "./pages/ReservationPolicy";
 import BlogList from "./pages/BlogList";
 import BlogDetails from "./pages/BlogDetails";
 import Footer from "./components/Footer";
+import Home from "./pages/Home";
 
 function App() {
   return (
@@ -14,7 +15,7 @@ function App() {
       <Header />
 
       <Routes>
-        <Route path="/" element={<BlogList />} />
+        <Route path="/" element={<Home />} />
         <Route path="/cancel-policy" element={<CancellationPolicy />} />
         <Route path="/flight-change" element={<FlightChange />} />
         <Route path="/reservation-policy" element={<ReservationPolicy />} />

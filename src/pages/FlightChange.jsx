@@ -1,15 +1,16 @@
+import bannerImage from "../assets/Copilot.png"
+
 const FlightChange = () => {
   return (
     <>
       {/* Hero Banner */}
       <div
         className="relative h-72 bg-cover bg-center flex items-center justify-center"
-        style={{
-          backgroundImage:
-            "url(https://images.unsplash.com/photo-1494415859740-21e878dd929d)",
-        }}
+             style={{
+         backgroundImage: `url(${bannerImage})`,
+       }}
       >
-        <div className="absolute inset-0 bg-blue-900/60"></div>
+        <div className="absolute inset-0 "></div>
 
         <h1 className="relative text-4xl md:text-5xl font-bold text-white text-center px-4">
           Flight Change Policy

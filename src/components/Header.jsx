@@ -5,7 +5,7 @@ const Header = () => {
     <header className="bg-white shadow-sm">
       <div className="max-w-7xl mx-auto flex justify-between items-center px-6 py-4">
         <div className="text-2xl font-bold text-blue-700">
-          AirlineRules
+          FlightHubz
         </div>
 
         <nav className="space-x-6 text-gray-700 font-medium">
