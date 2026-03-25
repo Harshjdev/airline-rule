@@ -9,8 +9,14 @@ import BlogDetails from "./pages/BlogDetails";
 import Footer from "./components/Footer";
 import Home from "./pages/Home";
 import AdminBlog from "./pages/AdminBlog";
+import { useState } from "react";
+import { Navigate } from "react-router-dom";
+import AdminLogin from "./components/AdminLogin"
 
 function App() {
+  const [isAdmin, setIsAdmin] = useState(
+  localStorage.getItem("adminAuth") === "true"
+);
   return (
     <BrowserRouter>
       <Header />
@@ -22,7 +28,12 @@ function App() {
         <Route path="/reservation-policy" element={<ReservationPolicy />} />
         <Route path="/blog" element={<BlogList />} />
         <Route path="/blog/:slug" element={<BlogDetails />} />
-        <Route path="/admin" element={<AdminBlog />} />
+      <Route
+  path="/admin"
+  element={
+    isAdmin ? <AdminBlog /> : <AdminLogin setIsAdmin={setIsAdmin} />
+  }
+/>
       </Routes>
 
       <Footer />
