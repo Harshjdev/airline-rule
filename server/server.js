@@ -2,28 +2,25 @@ const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");
 const path = require("path");
-const settingsRoutes = require("./routes/settingRoutes");
 require("dotenv").config();
 
 /* ==============================
    ROUTES IMPORT
 ============================== */
-
-// ✅ NEW BLOG ROUTES
+const settingsRoutes = require("./routes/settingRoutes");
 const blogRoutes = require("./routes/blogRoutes");
 const pageRoutes = require("./routes/pageRoutes");
 
 /* ==============================
    INIT APP
 ============================== */
-
 const app = express();
 
 /* ==============================
    MIDDLEWARE
 ============================== */
 
-// ✅ CORS CONFIG
+// ✅ CORS CONFIG (more flexible for production)
 const allowedOrigins = [
   "http://localhost:5173",
   "https://free-zaer.vercel.app",
@@ -34,48 +31,49 @@ const allowedOrigins = [
 app.use(
   cors({
     origin: function (origin, callback) {
-      // allow server-to-server or postman (no origin)
-      if (!origin || allowedOrigins.includes(origin)) {
+      if (!origin) return callback(null, true); // allow Postman / server requests
+
+      if (allowedOrigins.includes(origin)) {
         callback(null, true);
       } else {
-        console.log("Blocked by CORS:", origin);
-        callback(new Error("CORS not allowed"));
+        console.log("❌ Blocked by CORS:", origin);
+        callback(null, false); // don't crash server
       }
     },
     credentials: true,
-  }),
+  })
 );
 
 // ✅ BODY PARSER
-app.use(express.json());
+app.use(express.json({ limit: "10mb" }));
 app.use(express.urlencoded({ extended: true }));
 
-// ✅ STATIC FOLDER (IMAGES)
+// ✅ STATIC FILES
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
-app.use("/api/settings", settingsRoutes);
-app.use("/api/pages", pageRoutes);
 
 /* ==============================
    ROUTES
 ============================== */
 
-// Health check
+// Health check (IMPORTANT for Render)
 app.get("/", (req, res) => {
-  res.send("airline backend is running 🚀");
+  res.status(200).send("Backend is running 🚀");
 });
 
-// ✅ BLOG APIs
+// APIs
+app.use("/api/settings", settingsRoutes);
+app.use("/api/pages", pageRoutes);
 app.use("/api/blogs", blogRoutes);
 
 /* ==============================
    GLOBAL ERROR HANDLER
 ============================== */
-
 app.use((err, req, res, next) => {
-  console.error("Error:", err.message);
+  console.error("🔥 Error:", err);
+
   res.status(500).json({
     success: false,
-    message: err.message || "Server Error",
+    message: err.message || "Internal Server Error",
   });
 });
 
@@ -83,17 +81,33 @@ app.use((err, req, res, next) => {
    MONGODB CONNECTION
 ============================== */
 
-mongoose
-  .connect(process.env.MONGO_URI)
-  .then(() => {
-    console.log("MongoDB Atlas Connected ✅");
-
-    const PORT = process.env.PORT || 5000;
-
-    app.listen(PORT, () => {
-      console.log(`Server running on port ${PORT} 🚀`);
+const connectDB = async () => {
+  try {
+    await mongoose.connect(process.env.MONGO_URI, {
+      // These options improve stability
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
     });
-  })
-  .catch((error) => {
-    console.error("MongoDB connection error:", error);
-  });
+
+    console.log("✅ MongoDB Connected");
+
+  } catch (error) {
+    console.error("❌ MongoDB connection error:", error.message);
+
+    // retry after 5 sec (important for Render cold starts)
+    setTimeout(connectDB, 5000);
+  }
+};
+
+/* ==============================
+   START SERVER
+============================== */
+
+const PORT = process.env.PORT || 5000;
+
+app.listen(PORT, () => {
+  console.log(`🚀 Server running on port ${PORT}`);
+});
+
+// connect DB AFTER server starts
+connectDB();
