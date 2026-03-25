@@ -2,7 +2,10 @@ import { useState } from "react";
 import axios from "axios";
 import ReactQuill from "react-quill-new";
 import "react-quill-new/dist/quill.snow.css";
+import { useNavigate } from "react-router-dom";
+
 const AdminBlog = () => {
+  const navigate = useNavigate();
   const [form, setForm] = useState({
     title: "",
     slug: "",
@@ -22,39 +25,40 @@ const AdminBlog = () => {
 
   const [pageImage, setPageImage] = useState(null);
   const [quickLinks, setQuickLinks] = useState([""]);
-  const baseUrl = import.meta.env.VITE_API_URL || "https://airline-rule.onrender.com";
 
-  const handleChange = (e) => {
+  const baseUrl =
+    import.meta.env.VITE_API_URL ||
+    "https://airline-rule.onrender.com";
+
+  const inputStyle =
+    "w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500";
+
+  const buttonPrimary =
+    "bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-2 rounded-lg transition";
+
+  const handleChange = (e) =>
     setForm({ ...form, [e.target.name]: e.target.value });
-  };
-  const handlePageChange = (e) => {
+
+  const handlePageChange = (e) =>
     setPageForm({ ...pageForm, [e.target.name]: e.target.value });
-  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     try {
       const formData = new FormData();
-
-      // append form fields
       Object.keys(form).forEach((key) => {
         formData.append(key, form[key]);
       });
 
-      // ✅ ADD QUICK LINKS
       formData.append("quickLinks", JSON.stringify(quickLinks));
 
-      // image
-      if (image) {
-        formData.append("bannerImage", image);
-      }
+      if (image) formData.append("bannerImage", image);
 
       await axios.post(`${baseUrl}/api/blogs`, formData);
 
       alert("Blog Created Successfully 🚀");
 
-      // reset form
       setForm({
         title: "",
         slug: "",
@@ -62,44 +66,49 @@ const AdminBlog = () => {
         content: "",
         category: "",
       });
-
-      setQuickLinks([""]); // ✅ reset links
+      setQuickLinks([""]);
       setImage(null);
     } catch (err) {
-      console.error(err);
       alert("Error creating blog");
     }
   };
+
   const handlePageSubmit = async (e) => {
     e.preventDefault();
 
     try {
       const formData = new FormData();
+      Object.keys(pageForm).forEach((key) =>
+        formData.append(key, pageForm[key])
+      );
 
-      Object.keys(pageForm).forEach((key) => {
-        formData.append(key, pageForm[key]);
-      });
-
-      if (pageImage) {
-        formData.append("bannerImage", pageImage);
-      }
+      if (pageImage) formData.append("bannerImage", pageImage);
 
       await axios.post(`${baseUrl}/api/pages`, formData);
 
       alert("Page Saved Successfully 🚀");
 
-      setPageForm({
-        title: "",
-        slug: "",
-        content: "",
-      });
-
+      setPageForm({ title: "", slug: "", content: "" });
       setPageImage(null);
     } catch (err) {
-      console.error(err);
       alert("Error saving page");
     }
   };
+
+  const handleLogoSubmit = async (e) => {
+    e.preventDefault();
+    const formData = new FormData();
+    formData.append("logo", logo);
+    await axios.post(`${baseUrl}/api/settings/logo`, formData);
+    alert("Logo Updated ✅");
+  };
+
+  const handlePhoneSubmit = async (e) => {
+    e.preventDefault();
+    await axios.post(`${baseUrl}/api/settings/phone`, { phone });
+    alert("Phone Updated ✅");
+  };
+
   const modules = {
     toolbar: [
       [{ header: [1, 2, 3, false] }],
@@ -109,238 +118,218 @@ const AdminBlog = () => {
       ["clean"],
     ],
   };
-  const handleLogoSubmit = async (e) => {
-    e.preventDefault();
-
-    const formData = new FormData();
-    formData.append("logo", logo);
-
-    await axios.post(`${baseUrl}/api/settings/logo`, formData);
-
-    alert("Logo Updated ✅");
-  };
-  const handlePhoneSubmit = async (e) => {
-    e.preventDefault();
-
-    await axios.post(`${baseUrl}/api/settings/phone`, {
-      phone,
-    });
-
-    alert("Phone Updated ✅");
-  };
+const handleLogout = () => {
+  localStorage.removeItem("adminAuth");
+  navigate("/"); };
 
   return (
-    <div className="max-w-3xl mx-auto py-10 px-6">
-      <h2 className="text-2xl font-bold mb-6">Create Blog</h2>
+    <div className="min-h-screen bg-gray-100 py-10 px-4">
+      <div className="max-w-5xl mx-auto space-y-10">
 
-      <form onSubmit={handleSubmit} className="space-y-5">
-        {/* TITLE */}
-        <input
-          type="text"
-          name="title"
-          placeholder="Title"
-          value={form.title}
-          onChange={handleChange}
-          className="w-full border p-3 rounded"
-          required
-        />
+        {/* ================= BLOG ================= */}
+        <div className="bg-white p-6 rounded-2xl shadow">
+          <h2 className="text-xl font-bold mb-6">Create Blog</h2>
 
-        {/* SLUG */}
-        <input
-          type="text"
-          name="slug"
-          placeholder="Slug"
-          value={form.slug}
-          onChange={handleChange}
-          className="w-full border p-3 rounded"
-          required
-        />
+          <form onSubmit={handleSubmit} className="space-y-4">
+            <input
+              name="title"
+              placeholder="Title"
+              value={form.title}
+              onChange={handleChange}
+              className={inputStyle}
+              required
+            />
 
-        {/* DESCRIPTION */}
-        <textarea
-          name="description"
-          placeholder="Short Description"
-          value={form.description}
-          onChange={handleChange}
-          className="w-full border p-3 rounded"
-        />
+            <input
+              name="slug"
+              placeholder="Slug"
+              value={form.slug}
+              onChange={handleChange}
+              className={inputStyle}
+              required
+            />
 
-        {/* CATEGORY */}
-        <select
-          name="category"
-          value={form.category}
-          onChange={handleChange}
-          className="w-full border p-3 rounded"
-        >
-          <option value="">Select Category</option>
-          <option value="cancellation">Cancellation</option>
-          <option value="name-change">Name Change</option>
-          <option value="refund">Refund</option>
-        </select>
+            <textarea
+              name="description"
+              placeholder="Short Description"
+              value={form.description}
+              onChange={handleChange}
+              className={inputStyle}
+            />
 
-        {/* IMAGE */}
-        <input
-          type="file"
-          onChange={(e) => setImage(e.target.files[0])}
-          className="w-full"
-        />
+            <select
+              name="category"
+              value={form.category}
+              onChange={handleChange}
+              className={inputStyle}
+            >
+              <option value="">Select Category</option>
+              <option value="cancellation">Cancellation</option>
+              <option value="name-change">Name Change</option>
+              <option value="refund">Refund</option>
+            </select>
 
-        <ReactQuill
-          value={form.content}
-          onChange={(value) => setForm({ ...form, content: value })}
-          modules={modules}
-          className="bg-white"
-        />
-        {/* QUICK LINKS */}
-        <div>
-          <h3 className="font-semibold mb-2">Quick Links</h3>
+            <input
+              type="file"
+              onChange={(e) => setImage(e.target.files[0])}
+              className="w-full"
+            />
 
-          {quickLinks.map((link, index) => (
-            <div key={index} className="flex gap-2 mb-2">
-              <input
-                type="text"
-                value={link}
-                onChange={(e) => {
-                  const updated = [...quickLinks];
-                  updated[index] = e.target.value;
-                  setQuickLinks(updated);
-                }}
-                className="w-full border p-2 rounded"
-                placeholder={`Link ${index + 1}`}
-              />
+            <ReactQuill
+              value={form.content}
+              onChange={(value) =>
+                setForm({ ...form, content: value })
+              }
+              modules={modules}
+              className="bg-white"
+            />
+
+            {/* QUICK LINKS */}
+            <div>
+              <h3 className="font-semibold mb-2">Quick Links</h3>
+
+              {quickLinks.map((link, index) => (
+                <div key={index} className="flex gap-2 mb-2">
+                  <input
+                    value={link}
+                    onChange={(e) => {
+                      const updated = [...quickLinks];
+                      updated[index] = e.target.value;
+                      setQuickLinks(updated);
+                    }}
+                    className={inputStyle}
+                    placeholder={`Link ${index + 1}`}
+                  />
+
+                  <button
+                    type="button"
+                    onClick={() =>
+                      setQuickLinks(
+                        quickLinks.filter((_, i) => i !== index)
+                      )
+                    }
+                    className="bg-red-500 text-white px-3 rounded-lg"
+                  >
+                    X
+                  </button>
+                </div>
+              ))}
 
               <button
                 type="button"
-                onClick={() => {
-                  const updated = quickLinks.filter((_, i) => i !== index);
-                  setQuickLinks(updated);
-                }}
-                className="bg-red-500 text-white px-2 rounded"
+                onClick={() =>
+                  setQuickLinks([...quickLinks, ""])
+                }
+                className="bg-gray-200 px-4 py-1 rounded-lg"
               >
-                X
+                + Add Link
               </button>
             </div>
-          ))}
 
-          <button
-            type="button"
-            onClick={() => setQuickLinks([...quickLinks, ""])}
-            className="bg-gray-200 px-3 py-1 rounded"
-          >
-            + Add Link
-          </button>
+            <button type="submit" className={buttonPrimary}>
+              Create Blog
+            </button>
+          </form>
         </div>
-        <button
-          type="submit"
-          className="bg-blue-600 text-white px-6 py-3 rounded"
-        >
-          Create Blog
-        </button>
-      </form>
-      {/* ================= LOGO UPLOAD SECTION ================= */}
-      <div className="mt-12 p-6 bg-white rounded-xl shadow-md">
-        <h2 className="text-xl font-bold mb-4">Upload Header Logo</h2>
 
-        <form onSubmit={handleLogoSubmit} className="space-y-4">
-          {/* LOGO INPUT */}
-          <input
-            type="file"
-            accept="image/*"
-            onChange={(e) => setLogo(e.target.files[0])}
-            className="w-full"
-            required
-          />
-          {/* PREVIEW */}
-          {logo && (
-            <img
-              src={URL.createObjectURL(logo)}
-              alt="Preview"
-              className="h-20 object-contain"
+        {/* ================= LOGO ================= */}
+        <div className="bg-white p-6 rounded-2xl shadow">
+          <h2 className="text-lg font-bold mb-4">Upload Logo</h2>
+
+          <form onSubmit={handleLogoSubmit} className="space-y-4">
+            <input
+              type="file"
+              onChange={(e) => setLogo(e.target.files[0])}
             />
-          )}
 
-          <button
-            type="submit"
-            className="bg-green-600 text-white px-6 py-2 rounded"
-          >
-            Upload Logo
-          </button>
-        </form>
-      </div>
-      {/* PHONE FORM */}
-      <div className="mt-6 p-6 bg-white rounded-xl shadow-md">
-        <h2 className="text-xl font-bold mb-4">Update Phone</h2>
+            {logo && (
+              <img
+                src={URL.createObjectURL(logo)}
+                className="h-20"
+              />
+            )}
 
-        <form onSubmit={handlePhoneSubmit} className="space-y-4">
-          <input
-            type="text"
-            placeholder="Enter phone number"
-            value={phone}
-            onChange={(e) => setPhone(e.target.value)}
-            className="w-full border p-3 rounded"
-          />
+            <button className="bg-green-600 text-white px-4 py-2 rounded-lg">
+              Upload Logo
+            </button>
+          </form>
+        </div>
 
-          <button className="bg-blue-600 text-white px-4 py-2 rounded">
-            Update Phone
-          </button>
-        </form>
-      </div>
-      {/* ================= PAGE CMS SECTION ================= */}
-      <div className="mt-10 p-6 bg-white rounded-xl shadow-md">
-        <h2 className="text-xl font-bold mb-4">Create / Update Page</h2>
+        {/* ================= PHONE ================= */}
+        <div className="bg-white p-6 rounded-2xl shadow">
+          <h2 className="text-lg font-bold mb-4">Update Phone</h2>
 
-        <form onSubmit={handlePageSubmit} className="space-y-4">
-          {/* TITLE */}
-          <input
-            type="text"
-            name="title"
-            placeholder="Page Title"
-            value={pageForm.title}
-            onChange={handlePageChange}
-            className="w-full border p-3 rounded"
-            required
-          />
-
-          {/* SLUG */}
-          <input
-            type="text"
-            name="slug"
-            placeholder="Slug (e.g. cancellation-policy)"
-            value={pageForm.slug}
-            onChange={handlePageChange}
-            className="w-full border p-3 rounded"
-            required
-          />
-
-          {/* BANNER IMAGE */}
-          <input
-            type="file"
-            onChange={(e) => setPageImage(e.target.files[0])}
-            className="w-full"
-          />
-
-          {/* PREVIEW */}
-          {pageImage && (
-            <img
-              src={URL.createObjectURL(pageImage)}
-              alt="Preview"
-              className="h-24 object-cover"
+          <form onSubmit={handlePhoneSubmit} className="space-y-4">
+            <input
+              value={phone}
+              onChange={(e) => setPhone(e.target.value)}
+              placeholder="Phone number"
+              className={inputStyle}
             />
-          )}
 
-          {/* CONTENT EDITOR */}
-          <ReactQuill
-            value={pageForm.content}
-            onChange={(value) => setPageForm({ ...pageForm, content: value })}
-            modules={modules}
-            className="bg-white"
-          />
+            <button className={buttonPrimary}>
+              Update Phone
+            </button>
+          </form>
+        </div>
 
-          <button className="bg-purple-600 text-white px-6 py-2 rounded">
-            Save Page
-          </button>
-        </form>
+        {/* ================= PAGE CMS ================= */}
+        <div className="bg-white p-6 rounded-2xl shadow">
+          <h2 className="text-lg font-bold mb-4">Create Page</h2>
+
+          <form onSubmit={handlePageSubmit} className="space-y-4">
+            <input
+              name="title"
+              value={pageForm.title}
+              onChange={handlePageChange}
+              placeholder="Title"
+              className={inputStyle}
+            />
+
+            <input
+              name="slug"
+              value={pageForm.slug}
+              onChange={handlePageChange}
+              placeholder="Slug"
+              className={inputStyle}
+            />
+
+            <input
+              type="file"
+              onChange={(e) =>
+                setPageImage(e.target.files[0])
+              }
+            />
+
+            {pageImage && (
+              <img
+                src={URL.createObjectURL(pageImage)}
+                className="h-24"
+              />
+            )}
+
+            <ReactQuill
+              value={pageForm.content}
+              onChange={(value) =>
+                setPageForm({ ...pageForm, content: value })
+              }
+              modules={modules}
+            />
+
+            <button className="bg-purple-600 text-white px-6 py-2 rounded-lg">
+              Save Page
+            </button>
+          </form>
+        </div>
       </div>
+      <div className="flex justify-center mt-10">
+  <button
+    onClick={handleLogout}
+    className="bg-red-500 hover:bg-red-600 text-white px-6 py-2 rounded-lg transition font-semibold"
+  >
+    Logout
+  </button>
+</div>
     </div>
   );
 };
