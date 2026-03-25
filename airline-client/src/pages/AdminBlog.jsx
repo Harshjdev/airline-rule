@@ -22,7 +22,7 @@ const AdminBlog = () => {
 
   const [pageImage, setPageImage] = useState(null);
   const [quickLinks, setQuickLinks] = useState([""]);
-  const baseUrl = import.meta.env.VITE_API_URL || "http://localhost:5000";
+  const baseUrl = import.meta.env.VITE_API_URL || "https://airline-rule.onrender.com/";
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });

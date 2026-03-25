@@ -25,6 +25,7 @@ const allowedOrigins = [
   "http://localhost:5173",
   "https://free-zaer.vercel.app",
   "https://radivoninfra.com",
+  "https://usaflightservices.com",
   "https://www.radivoninfra.com",
 ];
 
