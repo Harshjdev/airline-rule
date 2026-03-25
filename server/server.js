@@ -84,18 +84,14 @@ app.use((err, req, res, next) => {
 
 const connectDB = async () => {
   try {
-    await mongoose.connect(process.env.MONGO_URI, {
-      // These options improve stability
-      useNewUrlParser: true,
-      useUnifiedTopology: true,
-    });
+    await mongoose.connect(process.env.MONGO_URI);
 
     console.log("✅ MongoDB Connected");
 
   } catch (error) {
     console.error("❌ MongoDB connection error:", error.message);
 
-    // retry after 5 sec (important for Render cold starts)
+    // retry after 5 sec
     setTimeout(connectDB, 5000);
   }
 };
