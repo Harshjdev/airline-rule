@@ -12,7 +12,7 @@ const BlogDetails = () => {
   const [recommended, setRecommended] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  const baseUrl = import.meta.env.VITE_API_URL || "https://airline-rule.onrender.com/";
+  const baseUrl = import.meta.env.VITE_API_URL || "https://airline-rule.onrender.com";
 
   /* ================= FETCH BLOG ================= */
   useEffect(() => {

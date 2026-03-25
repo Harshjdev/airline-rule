@@ -6,7 +6,7 @@ const Header = () => {
   const [logo, setLogo] = useState("");
   const [phone, setPhone] = useState("");
 
-  const baseUrl = import.meta.env.VITE_API_URL || "https://airline-rule.onrender.com/";
+  const baseUrl = import.meta.env.VITE_API_URL || "https://airline-rule.onrender.com";
 
   useEffect(() => {
     fetchSettings();

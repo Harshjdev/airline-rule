@@ -7,7 +7,7 @@ const Home = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [loading, setLoading] = useState(true);
 
-  const baseUrl = import.meta.env.VITE_API_URL || "https://airline-rule.onrender.com/";
+  const baseUrl = import.meta.env.VITE_API_URL || "https://airline-rule.onrender.com";
 
   /* ================= FETCH BLOGS ================= */
   useEffect(() => {

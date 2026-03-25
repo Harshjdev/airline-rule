@@ -5,7 +5,7 @@ const BlogCard = ({ blog }) => {
   const imageUrl = blog.bannerImage
     ? blog.bannerImage.startsWith("data:") // base64
       ? blog.bannerImage
-      : `https://airline-rule.onrender.com/${blog.bannerImage}` // multer image
+      : `https://airline-rule.onrender.com${blog.bannerImage}` // multer image
     : "https://via.placeholder.com/400x250?text=No+Image";
 
   return (

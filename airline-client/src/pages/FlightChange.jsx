@@ -4,7 +4,7 @@ import axios from "axios";
 const FlightChange = () => {
   const [page, setPage] = useState(null);
 
-  const baseUrl = import.meta.env.VITE_API_URL || "https://airline-rule.onrender.com/";
+  const baseUrl = import.meta.env.VITE_API_URL || "https://airline-rule.onrender.com";
 
   useEffect(() => {
     fetchPage();
