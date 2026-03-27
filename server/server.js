@@ -27,7 +27,7 @@ const app = express();
 const allowedOrigins = [
   "http://localhost:5173",
   "https://free-zaer.vercel.app",
-   "https://usaflightservices.com",
+  "https://usaflightservices.com",
   "https://radivoninfra.com",
   "https://www.radivoninfra.com",
 ];
