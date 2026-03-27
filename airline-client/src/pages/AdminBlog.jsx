@@ -4,6 +4,7 @@ import ReactQuill from "react-quill-new";
 import "react-quill-new/dist/quill.snow.css";
 import { useNavigate } from "react-router-dom";
 import { useEffect } from "react";
+import { FaImages } from "react-icons/fa";
 
 const AdminBlog = () => {
   const navigate = useNavigate();
@@ -291,12 +292,30 @@ const AdminBlog = () => {
               <option value="name-change">Name Change</option>
               <option value="refund">Refund</option>
             </select>
+            <label className="flex gap-5">
+              <FaImages className="text-4xl" />
+              <span className="bg-indigo-600 hover:bg-indigo-700 text-white px-5 py-2 rounded-lg cursor-pointer">
+                Upload Blog Banner Image
+              </span>
 
-            <input
-              type="file"
-              onChange={(e) => setImage(e.target.files[0])}
-              className="w-full"
-            />
+              <input
+                type="file"
+                onChange={(e) => setImage(e.target.files[0])}
+                className="hidden"
+              />
+            </label>
+            {image && (
+              <p className="text-sm text-gray-600 mt-2">
+                Selected: {image.name}
+              </p>
+            )}
+            {image && (
+              <img
+                src={URL.createObjectURL(image)}
+                className="h-32 mt-3 rounded-lg object-cover"
+              />
+            )}
+
             {editId &&
               !image &&
               blogs.find((b) => b._id === editId)?.bannerImage && (
