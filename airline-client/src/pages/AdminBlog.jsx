@@ -29,6 +29,10 @@ const AdminBlog = () => {
   const [quickLinks, setQuickLinks] = useState([""]);
   const [editId, setEditId] = useState(null);
   const [blogs, setBlogs] = useState([]);
+  const [headerHTML, setHeaderHTML] = useState("");
+  const [headerCSS, setHeaderCSS] = useState("");
+  const [footerHTML, setFooterHTML] = useState("");
+  const [footerCSS, setFooterCSS] = useState("");
 
   const baseUrl =
     import.meta.env.VITE_API_URL || "https://airline-rule.onrender.com";
@@ -51,6 +55,22 @@ const AdminBlog = () => {
   useEffect(() => {
     fetchBlogs();
   }, []);
+  const fetchLayout = async () => {
+    try {
+      const res = await axios.get(`${baseUrl}/api/layout`);
+
+      setHeaderHTML(res.data.headerHTML || "");
+      setHeaderCSS(res.data.headerCSS || "");
+      setFooterHTML(res.data.footerHTML || "");
+      setFooterCSS(res.data.footerCSS || "");
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  useEffect(() => {
+    fetchLayout();
+  }, []);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -63,6 +83,20 @@ const AdminBlog = () => {
 
   const handlePageChange = (e) =>
     setPageForm({ ...pageForm, [e.target.name]: e.target.value });
+  const handleLayoutSave = async () => {
+    try {
+      await axios.post(`${baseUrl}/api/layout`, {
+        headerHTML,
+        headerCSS,
+        footerHTML,
+        footerCSS,
+      });
+
+      alert("Layout Updated Successfully 🚀");
+    } catch (err) {
+      alert("Error saving layout");
+    }
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -244,6 +278,54 @@ const AdminBlog = () => {
                 )}
               </div>
             ))}
+          </div>
+
+          <div className="bg-white p-6 rounded-2xl shadow">
+            <h2 className="text-xl font-bold mb-6">Header & Footer CMS</h2>
+
+            {/* HEADER */}
+            <h3 className="font-semibold mb-2">Header HTML</h3>
+            <textarea
+              value={headerHTML}
+              onChange={(e) => setHeaderHTML(e.target.value)}
+              rows={6}
+              className="w-full border p-3 rounded mb-4"
+              placeholder="<header>...</header>"
+            />
+
+            <h3 className="font-semibold mb-2">Header CSS</h3>
+            <textarea
+              value={headerCSS}
+              onChange={(e) => setHeaderCSS(e.target.value)}
+              rows={4}
+              className="w-full border p-3 rounded mb-6"
+              placeholder=".header { background:black; }"
+            />
+
+            {/* FOOTER */}
+            <h3 className="font-semibold mb-2">Footer HTML</h3>
+            <textarea
+              value={footerHTML}
+              onChange={(e) => setFooterHTML(e.target.value)}
+              rows={6}
+              className="w-full border p-3 rounded mb-4"
+              placeholder="<footer>...</footer>"
+            />
+
+            <h3 className="font-semibold mb-2">Footer CSS</h3>
+            <textarea
+              value={footerCSS}
+              onChange={(e) => setFooterCSS(e.target.value)}
+              rows={4}
+              className="w-full border p-3 rounded mb-6"
+            />
+
+            <button
+              onClick={handleLayoutSave}
+              className="bg-black text-white px-6 py-2 rounded-lg"
+            >
+              Save Layout
+            </button>
           </div>
 
           <h2 className="text-xl font-bold mb-6">

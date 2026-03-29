@@ -12,7 +12,9 @@ const BlogList = () => {
 
   const fetchBlogs = async () => {
     try {
-      const res = await axios.get("https://airline-rule.onrender.com");
+      const res = await axios.get(
+        "https://airline-rule.onrender.com/api/blogs",
+      );
       setBlogs(res.data);
     } catch (error) {
       console.error("Error fetching blogs:", error);
