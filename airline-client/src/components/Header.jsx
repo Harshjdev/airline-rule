@@ -1,16 +1,23 @@
 import { Link } from "react-router-dom";
 import { useEffect, useState } from "react";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 const Header = () => {
+  const navigate = useNavigate();
   const [logo, setLogo] = useState("");
   const [phone, setPhone] = useState("");
 
-  const baseUrl = import.meta.env.VITE_API_URL || "https://airline-rule.onrender.com";
+  const baseUrl =
+    import.meta.env.VITE_API_URL || "https://airline-rule.onrender.com";
 
   useEffect(() => {
     fetchSettings();
   }, []);
+
+  const navtoHome = () => {
+    navigate("/");
+  };
 
   const fetchSettings = async () => {
     try {
@@ -32,7 +39,7 @@ const Header = () => {
     <header className="bg-white shadow-sm">
       <div className="max-w-7xl mx-auto flex justify-between items-center px-6 py-4">
         {/* LOGO */}
-        <div className="text-2xl font-bold text-blue-700">
+        <div className="text-2xl font-bold text-blue-700" onClick={navtoHome}>
           {logoUrl ? (
             <img src={logoUrl} alt="Logo" className="h-10" />
           ) : (

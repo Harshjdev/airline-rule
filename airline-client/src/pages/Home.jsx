@@ -1,15 +1,15 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 const Home = () => {
   const [blogs, setBlogs] = useState([]);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [loading, setLoading] = useState(true);
+  const navigate = useNavigate();
 
   const baseUrl =
-    import.meta.env.VITE_API_URL ||
-    "https://airline-rule.onrender.com";
+    import.meta.env.VITE_API_URL || "https://airline-rule.onrender.com";
 
   /* ================= FETCH BLOGS ================= */
   useEffect(() => {
@@ -32,9 +32,7 @@ const Home = () => {
     if (!blogs.length) return;
 
     const interval = setInterval(() => {
-      setCurrentIndex((prev) =>
-        prev === blogs.length - 1 ? 0 : prev + 1
-      );
+      setCurrentIndex((prev) => (prev === blogs.length - 1 ? 0 : prev + 1));
     }, 3000);
 
     return () => clearInterval(interval);
@@ -53,15 +51,12 @@ const Home = () => {
   /* ================= LOADING ================= */
   if (loading) {
     return (
-      <div className="text-center py-20 text-lg font-semibold">
-        Loading...
-      </div>
+      <div className="text-center py-20 text-lg font-semibold">Loading...</div>
     );
   }
 
   return (
     <div className="container mx-auto px-4 py-10">
-
       {/* ================= EMPTY STATE ================= */}
       {blogs.length === 0 ? (
         <h1 className="text-center text-2xl font-bold text-gray-600 py-20">
@@ -102,7 +97,7 @@ const Home = () => {
               {blogs.slice(1, 5).map((blog) => (
                 <div
                   key={blog._id}
-                  className="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-lg transition"
+                  onClick={() => navigate(`/blog/${blog.slug}`)} // ✅ correct
                 >
                   <img
                     src={getImage(blog.bannerImage)}
@@ -111,9 +106,7 @@ const Home = () => {
                   />
 
                   <div className="p-4">
-                    <h3 className="text-lg font-semibold mb-2">
-                      {blog.title}
-                    </h3>
+                    <h3 className="text-lg font-semibold mb-2">{blog.title}</h3>
 
                     <Link
                       to={`/blog/${blog.slug}`}
@@ -156,6 +149,7 @@ export default Home;
 /* ================= SECTION COMPONENT ================= */
 
 const Section = ({ title, blogs, getImage }) => {
+  const navigate = useNavigate();
   if (!blogs.length) {
     return (
       <div className="mb-16 text-center">
@@ -181,6 +175,7 @@ const Section = ({ title, blogs, getImage }) => {
           <div
             key={blog._id}
             className="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-lg transition"
+            onClick={() => navigate(`/blog/${blog.slug}`)} // ✅ correct
           >
             <img
               src={getImage(blog.bannerImage)}
@@ -189,9 +184,7 @@ const Section = ({ title, blogs, getImage }) => {
             />
 
             <div className="p-5">
-              <h3 className="text-lg font-semibold mb-3">
-                {blog.title}
-              </h3>
+              <h3 className="text-lg font-semibold mb-3">{blog.title}</h3>
 
               <Link
                 to={`/blog/${blog.slug}`}

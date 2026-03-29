@@ -145,8 +145,7 @@ router.delete("/:id", async (req, res) => {
 /* ==============================
    GET BLOG BY SLUG
 ============================== */
-
-router.get("/slug/:slug", async (req, res) => {
+router.get("/:slug", async (req, res) => {
   try {
     const blog = await Blog.findOne({ slug: req.params.slug });
 

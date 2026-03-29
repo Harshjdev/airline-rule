@@ -1,6 +1,9 @@
 import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 const BlogCard = ({ blog }) => {
+  const navigate = useNavigate();
+
   // ✅ Handle image properly
   const imageUrl = blog.bannerImage
     ? blog.bannerImage.startsWith("data:") // base64
@@ -8,8 +11,16 @@ const BlogCard = ({ blog }) => {
       : `https://airline-rule.onrender.com${blog.bannerImage}` // multer image
     : "https://via.placeholder.com/400x250?text=No+Image";
 
+  const navtoBlog = () => {
+    navigate(`/blog/${blog.slug}`);
+    console.log("blog card clicked");
+  };
+
   return (
-    <div className="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-lg transition">
+    <div
+      className="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-lg transition"
+      onClick={navtoBlog}
+    >
       <img
         src={imageUrl}
         alt={blog.title}
