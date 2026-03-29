@@ -1,16 +1,15 @@
-// routes/layout.js
-import express from "express";
-import Layout from "../models/Layout.js";
+const express = require("express");
+const Layout = require("../models/Layout"); // make sure this is also CommonJS
 
 const router = express.Router();
 
-// GET layout
+// GET
 router.get("/", async (req, res) => {
   const layout = await Layout.findOne();
   res.json(layout || {});
 });
 
-// SAVE layout
+// POST
 router.post("/", async (req, res) => {
   const { headerHTML, headerCSS, footerHTML, footerCSS } = req.body;
 
@@ -34,4 +33,4 @@ router.post("/", async (req, res) => {
   res.json({ message: "Layout Saved ✅" });
 });
 
-export default router;
+module.exports = router; // ✅ IMPORTANT
