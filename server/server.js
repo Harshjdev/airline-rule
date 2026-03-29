@@ -12,6 +12,7 @@ require("dotenv").config();
 // ✅ NEW BLOG ROUTES
 const blogRoutes = require("./routes/blogRoutes");
 const pageRoutes = require("./routes/pageRoutes");
+const layoutRoutes = require("./routes/LayoutRoutes");
 
 /* ==============================
    INIT APP
@@ -55,7 +56,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 app.use("/api/settings", settingsRoutes);
 app.use("/api/pages", pageRoutes);
-
+app.use("/api/layout", layoutRoutes);
 /* ==============================
    ROUTES
 ============================== */
