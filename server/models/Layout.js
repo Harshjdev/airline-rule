@@ -1,5 +1,6 @@
 // models/Layout.js
-import mongoose from "mongoose";
+
+const mongoose = require("mongoose");
 
 const layoutSchema = new mongoose.Schema({
   headerHTML: String,
@@ -8,4 +9,4 @@ const layoutSchema = new mongoose.Schema({
   footerCSS: String,
 });
 
-export default mongoose.model("Layout", layoutSchema);
+module.exports = mongoose.model("Layout", layoutSchema);
