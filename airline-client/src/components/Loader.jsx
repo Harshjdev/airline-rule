@@ -1,4 +1,4 @@
-const Loader = ({ size = 40, color = "#3498db" }) => {
+const Loader = ({ size = 60, color = "#3498db" }) => {
   return (
     <div
       style={{
