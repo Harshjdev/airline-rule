@@ -4,15 +4,18 @@ import axios from "axios";
 import Banner from "../components/Banner";
 import Sidebar from "../components/Sidebar";
 import bannerimage from "../assets/Copilot.png";
+import { useNavigate } from "react-router-dom";
 
 const BlogDetails = () => {
   const { slug } = useParams();
+  const navigate = useNavigate();
 
   const [blog, setBlog] = useState(null);
   const [recommended, setRecommended] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  const baseUrl = import.meta.env.VITE_API_URL || "https://airline-rule.onrender.com";
+  const baseUrl =
+    import.meta.env.VITE_API_URL || "https://airline-rule.onrender.com";
 
   /* ================= FETCH BLOG ================= */
   useEffect(() => {
@@ -32,6 +35,15 @@ const BlogDetails = () => {
       setLoading(false);
     }
   };
+  useEffect(() => {
+    if (!blog) {
+      const timer = setTimeout(() => {
+        navigate("/");
+      }, 2000); // redirect after 2 sec
+
+      return () => clearTimeout(timer);
+    }
+  }, [blog, navigate]);
 
   /* ================= IMAGE HELPER ================= */
   const getImage = (img) => {
@@ -47,11 +59,12 @@ const BlogDetails = () => {
     );
   }
 
-  /* ================= NOT FOUND ================= */
   if (!blog) {
     return (
-      <div className="text-center py-20 text-xl font-semibold">
-        Blog Not Found
+      <div className="flex flex-col items-center justify-center h-[60vh] text-center">
+        <h1 className="text-6xl font-bold text-red-500">404</h1>
+        <p className="text-xl mt-4">Page Not Found</p>
+        <p className="text-gray-500 mt-2">Redirecting to homepage...</p>
       </div>
     );
   }
