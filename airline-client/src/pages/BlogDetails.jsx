@@ -5,6 +5,7 @@ import Banner from "../components/Banner";
 import Sidebar from "../components/Sidebar";
 import bannerimage from "../assets/Copilot.png";
 import { useNavigate } from "react-router-dom";
+import Loader from "../components/Loader";
 
 const BlogDetails = () => {
   const { slug } = useParams();
@@ -55,7 +56,9 @@ const BlogDetails = () => {
   /* ================= LOADING ================= */
   if (loading) {
     return (
-      <div className="text-center py-20 text-lg font-semibold">Loading...</div>
+      <div className="text-center py-20 text-lg font-semibold">
+        <Loader />
+      </div>
     );
   }
 

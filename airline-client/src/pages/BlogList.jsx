@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 import BlogCard from "../components/BlogCard";
+import Loader from "../components/Loader";
 
 const BlogList = () => {
   const [blogs, setBlogs] = useState([]);
@@ -32,7 +33,7 @@ const BlogList = () => {
 
         {loading ? (
           <div className="text-center text-lg font-medium">
-            Loading blogs...
+            <Loader />
           </div>
         ) : blogs.length === 0 ? (
           <div className="text-center text-gray-500">No blogs found</div>
