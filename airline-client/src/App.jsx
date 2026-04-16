@@ -1,6 +1,5 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Header from "./components/Header";
-
 import CancellationPolicy from "./pages/CancellationPolicy";
 import FlightChange from "./pages/FlightChange";
 import ReservationPolicy from "./pages/ReservationPolicy";
@@ -9,15 +8,19 @@ import BlogDetails from "./pages/BlogDetails";
 import Footer from "./components/Footer";
 import Home from "./pages/Home";
 import AdminBlog from "./pages/AdminBlog";
-import { useState } from "react";
-import { Navigate } from "react-router-dom";
+import { useState, useEffect } from "react";
 import AdminLogin from "./components/AdminLogin";
 import NotFound from "./components/NotFound";
+import AboutUs from "./pages/Aboutus";
+import useDynamicHead from "./components/useDynamicHead";
 
 function App() {
+  useDynamicHead(); // ✅ keep this ONLY
+
   const [isAdmin, setIsAdmin] = useState(
     localStorage.getItem("adminAuth") === "true",
   );
+
   return (
     <BrowserRouter>
       <Header />
@@ -29,6 +32,7 @@ function App() {
         <Route path="/reservation-policy" element={<ReservationPolicy />} />
         <Route path="/blog" element={<BlogList />} />
         <Route path="/blog/:slug" element={<BlogDetails />} />
+        <Route path="/about" element={<AboutUs />} />
 
         <Route
           path="/admin"
@@ -37,7 +41,6 @@ function App() {
           }
         />
 
-        {/* ✅ Catch all unknown routes */}
         <Route path="*" element={<NotFound />} />
       </Routes>
 

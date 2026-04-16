@@ -17,6 +17,7 @@ const AdminBlog = () => {
   });
 
   const [image, setImage] = useState(null);
+  const [headHTML, setHeadHTML] = useState("");
   const [logo, setLogo] = useState(null);
   const [phone, setPhone] = useState("");
   const [pageForm, setPageForm] = useState({
@@ -60,6 +61,7 @@ const AdminBlog = () => {
       const res = await axios.get(`${baseUrl}/api/layout`);
 
       setHeaderHTML(res.data.headerHTML || "");
+      setHeadHTML(res.data.headHTML || "");
       setHeaderCSS(res.data.headerCSS || "");
       setFooterHTML(res.data.footerHTML || "");
       setFooterCSS(res.data.footerCSS || "");
@@ -67,6 +69,19 @@ const AdminBlog = () => {
       console.log(err);
     }
   };
+
+  const fetchSeo = async () => {
+    try {
+      const res = await axios.get(`${baseUrl}/api/seo/head`);
+      setHeadHTML(res.data?.data?.headScripts || "");
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  useEffect(() => {
+    fetchSeo();
+  }, []);
 
   useEffect(() => {
     fetchLayout();
@@ -85,6 +100,7 @@ const AdminBlog = () => {
     setPageForm({ ...pageForm, [e.target.name]: e.target.value });
   const handleLayoutSave = async () => {
     try {
+      // ✅ Save layout (header/footer)
       await axios.post(`${baseUrl}/api/layout`, {
         headerHTML,
         headerCSS,
@@ -92,7 +108,12 @@ const AdminBlog = () => {
         footerCSS,
       });
 
-      alert("Layout Updated Successfully 🚀");
+      // ✅ Save HEAD SEO separately
+      await axios.post(`${baseUrl}/api/seo/head`, {
+        headScripts: headHTML,
+      });
+
+      alert("Layout + SEO Updated ✅");
     } catch (err) {
       alert("Error saving layout");
     }
@@ -284,6 +305,14 @@ const AdminBlog = () => {
             <h2 className="text-xl font-bold mb-6">Header & Footer CMS</h2>
 
             {/* HEADER */}
+            <h3 className="font-semibold mb-2">Head SEO Code</h3>
+            <textarea
+              value={headHTML}
+              onChange={(e) => setHeadHTML(e.target.value)}
+              rows={5}
+              className="w-full border p-3 rounded mb-6"
+              placeholder='<meta name="google-site-verification" content="..." />'
+            />
             <h3 className="font-semibold mb-2">Header HTML</h3>
             <textarea
               value={headerHTML}

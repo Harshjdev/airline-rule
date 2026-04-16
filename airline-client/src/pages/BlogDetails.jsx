@@ -75,12 +75,11 @@ const BlogDetails = () => {
       <div className="bg-gray-50 py-12">
         <div
           className="max-w-7xl mx-auto px-6 
-                     grid grid-cols-1 
-                     lg:grid-cols-[20%_60%_20%] 
+                    
                      gap-8"
         >
           {/* LEFT - SIDEBAR */}
-          <div className="h-fit sticky top-24">
+          <div className="h-fit my-5 top-24">
             <Sidebar blog={blog} />
           </div>
 

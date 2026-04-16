@@ -3,10 +3,11 @@
 const mongoose = require("mongoose");
 
 const layoutSchema = new mongoose.Schema({
+  metaTitle: String,
+  metaDescription: String,
+
   headerHTML: String,
-  headerCSS: String,
   footerHTML: String,
-  footerCSS: String,
 });
 
 module.exports = mongoose.model("Layout", layoutSchema);

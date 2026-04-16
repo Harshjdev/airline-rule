@@ -4,16 +4,17 @@ import { useNavigate } from "react-router-dom";
 const BlogCard = ({ blog }) => {
   const navigate = useNavigate();
 
-  // ✅ Handle image properly
-  const imageUrl = blog.bannerImage
-    ? blog.bannerImage.startsWith("data:") // base64
-      ? blog.bannerImage
-      : `https://airline-rule.onrender.com${blog.bannerImage}` // multer image
-    : "https://via.placeholder.com/400x250?text=No+Image";
+  const baseUrl = "https://airline-rule.onrender.com";
+
+  const getImage = (img) => {
+    if (!img) return "https://via.placeholder.com/400x250";
+    return img.startsWith("data:") ? img : `${baseUrl}${img}`;
+  };
+
+  const imageUrl = getImage(blog.bannerImage);
 
   const navtoBlog = () => {
     navigate(`/blog/${blog.slug}`);
-    console.log("blog card clicked");
   };
 
   return (

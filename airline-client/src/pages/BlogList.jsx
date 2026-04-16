@@ -6,22 +6,26 @@ import Loader from "../components/Loader";
 const BlogList = () => {
   const [blogs, setBlogs] = useState([]);
   const [loading, setLoading] = useState(true);
-
+  const baseUrl =
+    import.meta.env.VITE_API_URL || "https://airline-rule.onrender.com";
   useEffect(() => {
     fetchBlogs();
   }, []);
 
   const fetchBlogs = async () => {
     try {
-      const res = await axios.get(
-        "https://airline-rule.onrender.com/api/blogs",
-      );
+      const res = await axios.get(`${baseUrl}/api/blogs`);
       setBlogs(res.data);
-    } catch (error) {
-      console.error("Error fetching blogs:", error);
+    } catch (err) {
+      console.error(err);
     } finally {
       setLoading(false);
     }
+  };
+  /* ================= IMAGE HELPER ================= */
+  const getImage = (img) => {
+    if (!img) return "https://via.placeholder.com/400x250";
+    return img.startsWith("data:") ? img : `${baseUrl}${img}`;
   };
 
   return (

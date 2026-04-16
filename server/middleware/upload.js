@@ -1,9 +1,13 @@
 const multer = require("multer");
+const { GridFsStorage } = require("multer-gridfs-storage");
 
-const storage = multer.diskStorage({
-  destination: "uploads/",
-  filename: (req, file, cb) => {
-    cb(null, Date.now() + "-" + file.originalname);
+const storage = new GridFsStorage({
+  url: process.env.MONGO_URI, // your MongoDB Atlas URL
+  file: (req, file) => {
+    return {
+      filename: Date.now() + "-" + file.originalname,
+      bucketName: "uploads", // collection name
+    };
   },
 });
 

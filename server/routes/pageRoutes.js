@@ -22,7 +22,7 @@ router.post("/", upload.single("bannerImage"), async (req, res) => {
         title,
         slug,
         content,
-        bannerImage: req.file ? `/uploads/${req.file.filename}` : "",
+        bannerImage: req.file ? req.file.filename : "",
       });
     } else {
       // update existing

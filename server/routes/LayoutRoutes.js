@@ -9,28 +9,30 @@ router.get("/", async (req, res) => {
   res.json(layout || {});
 });
 
-// POST
 router.post("/", async (req, res) => {
-  const { headerHTML, headerCSS, footerHTML, footerCSS } = req.body;
+  try {
+    const { headerHTML, headerCSS, footerHTML, footerCSS } = req.body;
 
-  let layout = await Layout.findOne();
+    const layout = await Layout.findOneAndUpdate(
+      {}, // single layout doc
+      {
+        $set: {
+          headerHTML,
+          headerCSS,
+          footerHTML,
+          footerCSS,
+        },
+      },
+      {
+        new: true,
+        upsert: true,
+      },
+    );
 
-  if (layout) {
-    layout.headerHTML = headerHTML;
-    layout.headerCSS = headerCSS;
-    layout.footerHTML = footerHTML;
-    layout.footerCSS = footerCSS;
-    await layout.save();
-  } else {
-    layout = await Layout.create({
-      headerHTML,
-      headerCSS,
-      footerHTML,
-      footerCSS,
-    });
+    res.json({ message: "Layout Saved ✅", layout });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
   }
-
-  res.json({ message: "Layout Saved ✅" });
 });
 
 module.exports = router; // ✅ IMPORTANT

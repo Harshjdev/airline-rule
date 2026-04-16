@@ -59,7 +59,25 @@ const Home = () => {
   }
 
   return (
-    <div className="container mx-auto px-4 py-10">
+    <div className="container mx-auto px-4">
+      {/* ================= BANNER SLIDER ================= */}
+      <div className="w-full h-[500px] my-10 relative overflow-hidden">
+        {blogs.map((blog, index) => (
+          <img
+            key={blog._id}
+            src={getImage(blog.bannerImage)}
+            alt={blog.title}
+            className={`absolute w-full h-full object-cover transition-opacity duration-700 ${
+              index === currentIndex ? "opacity-100" : "opacity-0"
+            }`}
+          />
+        ))}
+
+        {/* Optional Overlay Content */}
+        <div className="absolute bottom-10 left-10 text-white z-10">
+          <h2 className="text-3xl font-bold">{blogs[currentIndex]?.title}</h2>
+        </div>
+      </div>
       {/* ================= EMPTY STATE ================= */}
       {blogs.length === 0 ? (
         <h1 className="text-center text-2xl font-bold text-gray-600 py-20">

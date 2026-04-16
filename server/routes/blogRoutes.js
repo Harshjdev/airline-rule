@@ -2,33 +2,29 @@ const express = require("express");
 const router = express.Router();
 const Blog = require("../models/Blog");
 const multer = require("multer");
-const path = require("path");
-const fs = require("fs");
+const mongoose = require("mongoose");
 
+const storage = multer.memoryStorage();
+const upload = multer({ storage });
 /* ==============================
    MULTER CONFIG
-============================== */
-
-const storage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    cb(null, "uploads/");
-  },
-  filename: function (req, file, cb) {
-    const uniqueName = Date.now() + "-" + file.originalname.replace(/\s/g, "-");
-    cb(null, uniqueName);
-  },
-});
-
-const upload = multer({ storage });
-
 /* ==============================
    GET ALL BLOGS
 ============================== */
 
-router.get("/", async (req, res) => {
+router.get("/image/:filename", async (req, res) => {
   try {
-    const blogs = await Blog.find().sort({ createdAt: -1 });
-    res.json(blogs);
+    const bucket = new mongoose.mongo.GridFSBucket(mongoose.connection.db, {
+      bucketName: "uploads",
+    });
+
+    const stream = bucket.openDownloadStreamByName(req.params.filename);
+
+    stream.pipe(res);
+
+    stream.on("error", () => {
+      res.status(404).json({ message: "Image not found" });
+    });
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
@@ -42,6 +38,24 @@ router.post("/", upload.single("bannerImage"), async (req, res) => {
   try {
     const { title, slug, description, content, category, quickLinks } =
       req.body;
+
+    let filename = "";
+
+    if (req.file) {
+      const bucket = new mongoose.mongo.GridFSBucket(mongoose.connection.db, {
+        bucketName: "uploads",
+      });
+
+      const uniqueName =
+        Date.now() + "-" + req.file.originalname.replace(/\s/g, "-");
+
+      const uploadStream = bucket.openUploadStream(uniqueName);
+
+      uploadStream.end(req.file.buffer);
+
+      filename = uniqueName;
+    }
+
     const blog = new Blog({
       title,
       slug,
@@ -49,7 +63,7 @@ router.post("/", upload.single("bannerImage"), async (req, res) => {
       content,
       category,
       quickLinks: quickLinks ? JSON.parse(quickLinks) : [],
-      bannerImage: req.file ? `/uploads/${req.file.filename}` : "",
+      bannerImage: filename,
     });
 
     await blog.save();
@@ -60,17 +74,13 @@ router.post("/", upload.single("bannerImage"), async (req, res) => {
       data: blog,
     });
   } catch (err) {
-    res.status(500).json({
-      success: false,
-      message: err.message,
-    });
+    res.status(500).json({ success: false, message: err.message });
   }
 });
 
 /* ==============================
    UPDATE BLOG
 ============================== */
-
 router.put("/:id", upload.single("bannerImage"), async (req, res) => {
   try {
     const { title, slug, description, content, category, quickLinks } =
@@ -82,26 +92,27 @@ router.put("/:id", upload.single("bannerImage"), async (req, res) => {
       return res.status(404).json({ message: "Blog not found" });
     }
 
-    // Update fields
     blog.title = title || blog.title;
     blog.slug = slug || blog.slug;
     blog.description = description || blog.description;
     blog.content = content || blog.content;
     blog.category = category || blog.category;
-
-    // Handle quickLinks
     blog.quickLinks = quickLinks ? JSON.parse(quickLinks) : blog.quickLinks;
 
+    // ✅ FIX: Upload image to GridFS
     if (req.file) {
-      // Delete old image
-      if (blog.bannerImage) {
-        const oldPath = path.join(__dirname, "..", blog.bannerImage);
-        if (fs.existsSync(oldPath)) {
-          fs.unlinkSync(oldPath);
-        }
-      }
+      const bucket = new mongoose.mongo.GridFSBucket(mongoose.connection.db, {
+        bucketName: "uploads",
+      });
 
-      blog.bannerImage = `/uploads/${req.file.filename}`;
+      const uniqueName =
+        Date.now() + "-" + req.file.originalname.replace(/\s/g, "-");
+
+      const uploadStream = bucket.openUploadStream(uniqueName);
+
+      uploadStream.end(req.file.buffer);
+
+      blog.bannerImage = uniqueName;
     }
 
     await blog.save();
@@ -118,7 +129,6 @@ router.put("/:id", upload.single("bannerImage"), async (req, res) => {
     });
   }
 });
-
 /* ==============================
    DELETE BLOG
 ============================== */
@@ -142,6 +152,7 @@ router.delete("/:id", async (req, res) => {
     });
   }
 });
+
 /* ==============================
    GET BLOG BY SLUG
 ============================== */
