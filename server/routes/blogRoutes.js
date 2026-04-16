@@ -11,6 +11,15 @@ const upload = multer({ storage });
 /* ==============================
    GET ALL BLOGS
 ============================== */
+router.get("/", async (req, res) => {
+  try {
+    const blogs = await Blog.find().sort({ createdAt: -1 });
+
+    res.json(blogs);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+});
 
 router.get("/image/:filename", async (req, res) => {
   try {
