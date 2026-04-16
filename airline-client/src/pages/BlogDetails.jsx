@@ -75,7 +75,7 @@ const BlogDetails = () => {
       {/* Banner */}
       <Banner title={blog.title} image={bannerimage} />
 
-      <div className="bg-gray-50 py-12">
+      <div className="bg-gray-50 py-5">
         <div
           className="max-w-7xl mx-auto px-6 
                     
@@ -101,7 +101,7 @@ const BlogDetails = () => {
           </div>
 
           {/* RIGHT - RECOMMENDED BLOGS */}
-          <div className="bg-white p-6 rounded-xl shadow-md h-fit sticky top-24">
+          <div className="bg-white p-6 rounded-xl shadow-md h-fit sticky top-24 my-5">
             <h3 className="text-lg font-semibold text-blue-700 mb-6">
               Recommended Blogs
             </h3>

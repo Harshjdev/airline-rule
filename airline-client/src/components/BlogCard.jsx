@@ -31,7 +31,9 @@ const BlogCard = ({ blog }) => {
           {blog.title}
         </h2>
 
-        <p className="text-gray-600 mb-4">{blog.description}</p>
+        <p className="text-gray-600 mb-4">
+          {blog.description?.split(" ").slice(0, 50).join(" ")}...
+        </p>
 
         <Link
           to={`/blog/${blog.slug}`}
