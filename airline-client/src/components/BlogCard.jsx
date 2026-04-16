@@ -4,14 +4,12 @@ import { useNavigate } from "react-router-dom";
 const BlogCard = ({ blog }) => {
   const navigate = useNavigate();
 
-  const baseUrl = "https://airline-rule.onrender.com";
+  const baseUrl =
+    import.meta.env.VITE_API_URL || "https://airline-rule.onrender.com";
 
-  const getImage = (img) => {
-    if (!img) return "https://via.placeholder.com/400x250";
-    return img.startsWith("data:") ? img : `${baseUrl}${img}`;
-  };
-
-  const imageUrl = getImage(blog.bannerImage);
+  const imageUrl = blog.bannerImage
+    ? `${baseUrl}/api/blogs/image/${blog.bannerImage}`
+    : "https://via.placeholder.com/400x250";
 
   const navtoBlog = () => {
     navigate(`/blog/${blog.slug}`);

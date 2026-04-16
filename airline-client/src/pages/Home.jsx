@@ -42,9 +42,13 @@ const Home = () => {
   /* ================= IMAGE HELPER ================= */
   const getImage = (img) => {
     if (!img) return "https://via.placeholder.com/400x250";
-    return img.startsWith("data:") ? img : `${baseUrl}${img}`;
-  };
 
+    // base64
+    if (img.startsWith("data:")) return img;
+
+    // multer / filename
+    return `${baseUrl}/api/blogs/image/${img}`;
+  };
   /* ================= FILTER ================= */
   const filterBlogs = (category) =>
     blogs.filter((blog) => blog.category === category);
@@ -61,7 +65,10 @@ const Home = () => {
   return (
     <div className="container mx-auto px-4">
       {/* ================= BANNER SLIDER ================= */}
-      <div className="w-full h-[500px] my-10 relative overflow-hidden">
+      <div
+        className="w-full h-[500px] my-10 relative overflow-hidden cursor-pointer"
+        onClick={() => navigate(`/blog/${blogs[currentIndex]?.slug}`)}
+      >
         {blogs.map((blog, index) => (
           <img
             key={blog._id}
@@ -73,7 +80,7 @@ const Home = () => {
           />
         ))}
 
-        {/* Optional Overlay Content */}
+        {/* Overlay Content */}
         <div className="absolute bottom-10 left-10 text-white z-10">
           <h2 className="text-3xl font-bold">{blogs[currentIndex]?.title}</h2>
         </div>
@@ -88,7 +95,10 @@ const Home = () => {
           {/* ================= TOP SECTION ================= */}
           <div className="flex flex-col lg:flex-row gap-6 mb-16">
             {/* LEFT - SLIDER */}
-            <div className="lg:w-1/2 bg-white rounded-xl shadow-md overflow-hidden">
+            <div
+              className="lg:w-1/2 bg-white rounded-xl shadow-md overflow-hidden cursor-pointer hover:shadow-lg transition"
+              onClick={() => navigate(`/blog/${blogs[currentIndex]?.slug}`)}
+            >
               <img
                 src={getImage(blogs[currentIndex]?.bannerImage)}
                 alt={blogs[currentIndex]?.title}
@@ -101,12 +111,15 @@ const Home = () => {
                 </h2>
 
                 <p className="text-gray-600 mb-4">
-                  {blogs[currentIndex]?.description}
+                  {blogs[currentIndex]?.description?.length > 120
+                    ? blogs[currentIndex].description.slice(0, 120) + "..."
+                    : blogs[currentIndex]?.description}
                 </p>
 
                 <Link
                   to={`/blog/${blogs[currentIndex]?.slug}`}
                   className="text-blue-600 font-semibold hover:underline"
+                  onClick={(e) => e.stopPropagation()} // 🔥 important
                 >
                   Read More →
                 </Link>

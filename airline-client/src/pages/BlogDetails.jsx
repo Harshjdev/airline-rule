@@ -47,11 +47,14 @@ const BlogDetails = () => {
     }
   }, [blog, navigate]);
 
-  /* ================= IMAGE HELPER ================= */
   const getImage = (img) => {
     if (!img) return "https://via.placeholder.com/300";
 
-    return img.startsWith("data:") ? img : `${baseUrl}${img}`;
+    // base64 image
+    if (img.startsWith("data:")) return img;
+
+    // multer filename
+    return `${baseUrl}/api/blogs/image/${img}`;
   };
 
   /* ================= LOADING ================= */
