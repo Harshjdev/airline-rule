@@ -7,6 +7,7 @@ const Home = () => {
   const [blogs, setBlogs] = useState([]);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [loading, setLoading] = useState(true);
+  const [banners, setBanners] = useState([]);
   const navigate = useNavigate();
 
   const baseUrl =
@@ -27,6 +28,28 @@ const Home = () => {
       setLoading(false);
     }
   };
+  const fetchBanners = async () => {
+    try {
+      const res = await axios.get(`${baseUrl}/api/banners`);
+
+      setBanners(res.data);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  useEffect(() => {
+    fetchBanners();
+  }, []);
+  useEffect(() => {
+    if (!banners.length) return;
+
+    const interval = setInterval(() => {
+      setCurrentIndex((prev) => (prev === banners.length - 1 ? 0 : prev + 1));
+    }, 3000);
+
+    return () => clearInterval(interval);
+  }, [banners]);
 
   /* ================= SLIDER ================= */
   useEffect(() => {
@@ -67,22 +90,21 @@ const Home = () => {
       {/* ================= BANNER SLIDER ================= */}
       <div
         className="w-full h-[500px] my-10 relative overflow-hidden cursor-pointer"
-        onClick={() => navigate(`/blog/${blogs[currentIndex]?.slug}`)}
+        onClick={() => window.open(banners[currentIndex]?.link, "_self")}
       >
-        {blogs.map((blog, index) => (
+        {banners.map((banner, index) => (
           <img
-            key={blog._id}
-            src={getImage(blog.bannerImage)}
-            alt={blog.title}
+            key={banner._id}
+            src={`${baseUrl}/uploads/banners/${banner.image}`}
+            alt={banner.title}
             className={`absolute w-full h-full object-cover transition-opacity duration-700 ${
               index === currentIndex ? "opacity-100" : "opacity-0"
             }`}
           />
         ))}
 
-        {/* Overlay Content */}
         <div className="absolute bottom-10 left-10 text-white z-10">
-          <h2 className="text-3xl font-bold">{blogs[currentIndex]?.title}</h2>
+          <h2 className="text-4xl font-bold">{banners[currentIndex]?.title}</h2>
         </div>
       </div>
       {/* ================= EMPTY STATE ================= */}

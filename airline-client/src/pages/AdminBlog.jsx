@@ -33,6 +33,10 @@ const AdminBlog = () => {
   const [headerCSS, setHeaderCSS] = useState("");
   const [footerHTML, setFooterHTML] = useState("");
   const [footerCSS, setFooterCSS] = useState("");
+  const [bannerTitle, setBannerTitle] = useState("");
+  const [bannerLink, setBannerLink] = useState("");
+  const [bannerImage, setBannerImage] = useState(null);
+  const [banners, setBanners] = useState([]);
 
   const baseUrl =
     import.meta.env.VITE_API_URL || "https://airline-rule.onrender.com";
@@ -71,6 +75,18 @@ const AdminBlog = () => {
 
   useEffect(() => {
     fetchLayout();
+  }, []);
+  const fetchBanners = async () => {
+    try {
+      const res = await axios.get(`${baseUrl}/api/banners`);
+      setBanners(res.data);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  useEffect(() => {
+    fetchBanners();
   }, []);
 
   const handleChange = (e) => {
@@ -138,6 +154,41 @@ const AdminBlog = () => {
       setEditId(null);
     } catch (err) {
       alert("Error saving blog");
+    }
+  };
+  const handleBannerSubmit = async (e) => {
+    e.preventDefault();
+
+    try {
+      const formData = new FormData();
+
+      formData.append("title", bannerTitle);
+      formData.append("link", bannerLink);
+
+      if (bannerImage) {
+        formData.append("image", bannerImage);
+      }
+
+      await axios.post(`${baseUrl}/api/banners`, formData);
+
+      alert("Banner Added ✅");
+
+      setBannerTitle("");
+      setBannerLink("");
+      setBannerImage(null);
+
+      fetchBanners();
+    } catch (err) {
+      alert("Error adding banner");
+    }
+  };
+  const handleBannerDelete = async (id) => {
+    try {
+      await axios.delete(`${baseUrl}/api/banners/${id}`);
+
+      fetchBanners();
+    } catch (err) {
+      console.log(err);
     }
   };
   const handleDelete = async (id) => {
@@ -228,6 +279,70 @@ const AdminBlog = () => {
   return (
     <div className="min-h-screen bg-gray-100 py-10 px-4">
       <div className="max-w-5xl mx-auto space-y-10">
+        <div className="bg-white p-6 rounded-2xl shadow">
+          <h2 className="text-xl font-bold mb-6">Banner Slider CMS</h2>
+
+          <form onSubmit={handleBannerSubmit} className="space-y-4">
+            <input
+              type="text"
+              placeholder="Banner Title"
+              value={bannerTitle}
+              onChange={(e) => setBannerTitle(e.target.value)}
+              className={inputStyle}
+            />
+
+            <input
+              type="text"
+              placeholder="Banner Redirect Link"
+              value={bannerLink}
+              onChange={(e) => setBannerLink(e.target.value)}
+              className={inputStyle}
+            />
+
+            <input
+              type="file"
+              onChange={(e) => setBannerImage(e.target.files[0])}
+            />
+
+            {bannerImage && (
+              <img
+                src={URL.createObjectURL(bannerImage)}
+                className="h-40 rounded-lg object-cover"
+              />
+            )}
+
+            <button className={buttonPrimary}>Upload Banner</button>
+          </form>
+
+          <div className="mt-8 space-y-3">
+            {banners.map((banner) => (
+              <div
+                key={banner._id}
+                className="border rounded-lg p-4 flex items-center justify-between"
+              >
+                <div className="flex items-center gap-4">
+                  <img
+                    src={`${baseUrl}/uploads/banners/${banner.image}`}
+                    className="w-32 h-20 object-cover rounded"
+                  />
+
+                  <div>
+                    <h3 className="font-semibold">{banner.title}</h3>
+
+                    <p className="text-sm text-gray-500">{banner.link}</p>
+                  </div>
+                </div>
+
+                <button
+                  onClick={() => handleBannerDelete(banner._id)}
+                  className="bg-red-500 text-white px-4 py-2 rounded"
+                >
+                  Delete
+                </button>
+              </div>
+            ))}
+          </div>
+        </div>
         {/* ================= BLOG ================= */}
         <div className="bg-white p-6 rounded-2xl shadow">
           <div className="bg-white p-6 rounded-2xl shadow">
