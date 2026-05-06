@@ -89,23 +89,19 @@ const Home = () => {
     <div className="container mx-auto px-4">
       {/* ================= BANNER SLIDER ================= */}
       <div
-        className="w-full h-[500px] my-10 relative overflow-hidden cursor-pointer"
-        onClick={() => window.open(banners[currentIndex]?.link, "_self")}
+        className="w-full h-[800px] my-5 relative overflow-hidden cursor-pointer"
+        // onClick={() => window.open(banners[currentIndex]?.link, "_self")}
       >
         {banners.map((banner, index) => (
           <img
             key={banner._id}
             src={`${baseUrl}/uploads/banners/${banner.image}`}
             alt={banner.title}
-            className={`absolute w-full h-full object-cover transition-opacity duration-700 ${
+            className={`absolute w-full h-full object-cover transition-opacity duration-900 ${
               index === currentIndex ? "opacity-100" : "opacity-0"
             }`}
           />
         ))}
-
-        <div className="absolute bottom-10 left-10 text-white z-10">
-          <h2 className="text-4xl font-bold">{banners[currentIndex]?.title}</h2>
-        </div>
       </div>
       {/* ================= EMPTY STATE ================= */}
       {blogs.length === 0 ? (
