@@ -95,6 +95,7 @@ const AdminBlog = () => {
       });
 
       alert("Layout + SEO Updated ✅");
+      //updated
     } catch (err) {
       alert("Error saving layout");
     }
