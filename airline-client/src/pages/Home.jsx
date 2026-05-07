@@ -86,20 +86,22 @@ const Home = () => {
   }
 
   return (
-    <div className="container mx-auto px-4">
+    <div className="container mx-auto px-3 sm:px-4 lg:px-6">
       {/* ================= BANNER SLIDER ================= */}
       <div
-        className="w-full h-[800px] my-5 relative overflow-hidden cursor-pointer"
-        // onClick={() => window.open(banners[currentIndex]?.link, "_self")}
+        className="w-full relative overflow-hidden rounded-xl cursor-pointer 
+       mt-4 mb-4
+       h-[180px] sm:h-[280px] md:h-[400px] lg:h-[550px] xl:h-[650px]"
       >
         {banners.map((banner, index) => (
           <img
             key={banner._id}
             src={`${baseUrl}/uploads/banners/${banner.image}`}
             alt={banner.title}
-            className={`absolute w-full h-full object-cover transition-opacity duration-900 ${
-              index === currentIndex ? "opacity-100" : "opacity-0"
-            }`}
+            className={`absolute inset-0 w-full h-full object-cover 
+                  transition-opacity duration-700 ${
+                    index === currentIndex ? "opacity-100" : "opacity-0"
+                  }`}
           />
         ))}
       </div>
@@ -120,11 +122,11 @@ const Home = () => {
               <img
                 src={getImage(blogs[currentIndex]?.bannerImage)}
                 alt={blogs[currentIndex]?.title}
-                className="h-[350px] w-full object-cover"
+                className="h-[220px] sm:h-[280px] md:h-[350px] w-full object-cover"
               />
 
-              <div className="p-6">
-                <h2 className="text-2xl font-bold mb-3">
+              <div className="p-4 sm:p-6">
+                <h2 className="text-xl sm:text-2xl font-bold mb-3 leading-snug">
                   {blogs[currentIndex]?.title}
                 </h2>
 
@@ -145,7 +147,7 @@ const Home = () => {
             </div>
 
             {/* RIGHT - 4 BLOGS */}
-            <div className="lg:w-1/2 grid grid-cols-1 sm:grid-cols-2 gap-6">
+            <div className="lg:w-1/2 grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
               {blogs.slice(1, 5).map((blog) => (
                 <div
                   key={blog._id}
@@ -218,7 +220,7 @@ const Section = ({ title, blogs, getImage }) => {
 
   return (
     <div className="mb-16">
-      <h2 className="text-3xl font-bold mb-8 border-l-4 border-blue-600 pl-4">
+      <h2 className="text-2xl sm:text-3xl font-bold mb-6 sm:mb-8 border-l-4 border-blue-600 pl-3 sm:pl-4">
         {title}
       </h2>
 
@@ -232,7 +234,7 @@ const Section = ({ title, blogs, getImage }) => {
             <img
               src={getImage(blog.bannerImage)}
               alt={blog.title}
-              className="h-48 w-full object-cover"
+              className="h-44 sm:h-48 w-full object-cover"
             />
 
             <div className="p-5">

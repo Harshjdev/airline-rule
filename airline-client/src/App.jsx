@@ -15,7 +15,6 @@ import AboutUs from "./pages/Aboutus";
 import useDynamicHead from "./components/useDynamicHead";
 
 function App() {
-  useDynamicHead(); 
   const [isAdmin, setIsAdmin] = useState(
     localStorage.getItem("adminAuth") === "true",
   );
